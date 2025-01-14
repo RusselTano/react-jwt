@@ -1,4 +1,5 @@
-const BASE_URL = "https://api.myaddressesbook.com";
+const BASE_URL = "http://localhost:3000";
+// const BASE_URL = "https://api.myaddressesbook.com";
 
 export async function createUser(newUser) {
   const response = await fetch(`${BASE_URL}/users/register`, {
@@ -35,6 +36,12 @@ export async function loginUser(user) {
   }else {
     throw new Error("Error api login")
   }
-  
-  
+}
+
+export async function getCurrentUser(){
+  const response = await fetch(`${BASE_URL}/users/me`, {
+    method: "GET",
+    credentials: "include"
+  });
+  return response.json();
 }
