@@ -2,17 +2,13 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { createUser } from "../../api/user";
+import { loginUser } from "../../api/user";
 import { useNavigate } from "react-router-dom";
 
-const Signup = () => {
+const Signin = () => {
   const navigate = useNavigate();
 
   const validationSchema = yup.object({
-    name: yup
-      .string()
-      .required("Il faut preciser votre nom")
-      .min(2, "entree un vrai nom s'il vous"),
     email: yup
       .string()
       .required("Il faut preciser votre email")
@@ -24,7 +20,6 @@ const Signup = () => {
   });
 
   const initialValues = {
-    name: "",
     email: "",
     password: "",
   };
@@ -44,8 +39,8 @@ const Signup = () => {
     console.log("Données soumises :", user); // Ajouter ceci pour voir les données
     try {
       clearErrors();
-      await createUser(user); // Appelle l'API avec les données de l'utilisateur
-      navigate("/signin");
+      await loginUser(user); // Appelle l'API avec les données de l'utilisateur
+      navigate("/");
     } catch (message) {
       setError("generic", { type: "generic", message });
     }
@@ -54,17 +49,8 @@ const Signup = () => {
 
   return (
     <div>
-      <h2>Signup</h2>
+      <h2>SignIn</h2>
       <form onSubmit={submit}>
-        <div>
-          <input
-            {...register("name")}
-            type="text"
-            name="name"
-            placeholder="Dylane lamene jean dupont"
-          />
-          {errors.name && <p>{errors.name.message}</p>}
-        </div>
         <div>
           <input
             {...register("email")}
@@ -82,12 +68,11 @@ const Signup = () => {
           {errors.password && <p className={errors ? "errors" : ""}>{errors.password.message}</p>}
         </div>
         <div>
-          {/* <button disabled={isSubmitting}/>S'inscrire</button> */}
-          <button disabled={isSubmitting} >S'inscrire</button>
+          <button disabled={isSubmitting} >Se connecter</button>
         </div>
       </form>
     </div>
   );
 };
 
-export default Signup;
+export default Signin;

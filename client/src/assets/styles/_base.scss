@@ -23,7 +23,10 @@ ul {
     padding-left: 0px;
     margin: 0;
 }
-
+a {
+    text-decoration: none;
+    color: indianred;
+}
 img {
     max-width: 100%;
 }
@@ -32,6 +35,17 @@ input {
     font-family: var(--font-family);
 }
 
+input.errors {
+    border: 2px solid red;
+}
+
+input.errors:focus {
+    border: 2px solid red;
+}
+
+p.errors {
+    color: red;
+}
 ::placeholder {
     font-family: var(--font-family);
 }
