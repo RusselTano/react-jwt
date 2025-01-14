@@ -1,11 +1,16 @@
-import { useContext } from "react";
 import styles from "./Header.module.scss";
 import { NavLink } from "react-router-dom";
-import { AuthContext } from "../../context";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "./context/AuthContext";
 
 function Header() {
-  const { user } = useContext(AuthContext);
-  console.log(user);
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await logout(); // Appelle la fonction logout du contexte
+    navigate("/login"); // Redirige vers la page de connexion
+  };
   
   return (
     <header className={`${styles.header} d-flex flex-row align-items-center`}>
@@ -14,7 +19,7 @@ function Header() {
           <strong>JWT</strong>
         </NavLink>
       </div>
-      {user.message !== "Non autorisé." ? (
+      {user ? (
         <ul className={styles.headerList}>
           <li>
             <NavLink to="profile" className="mr-15">
@@ -22,9 +27,7 @@ function Header() {
             </NavLink>
           </li>
           <li>
-            <NavLink to="sinout" className="mr-15">
-              Deconnexion
-            </NavLink>
+          <button onClick={handleLogout}>Déconnexion</button>
           </li>
         </ul>
       ) : (

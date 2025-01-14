@@ -45,3 +45,28 @@ export async function getCurrentUser(){
   });
   return response.json();
 }
+
+export const fetchProfile = async () => {
+  try {
+    const response = await fetch("/api/me", {
+      method: "GET",
+      credentials: "include", // Important pour inclure les cookies
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Erreur lors de la récupération du profil.");
+    }
+
+    const user = await response.json();
+    console.log("Profil utilisateur récupéré :", user);
+    return user;
+  } catch (error) {
+    console.error("Erreur lors de la récupération du profil :", error.message);
+    throw error;
+  }
+};
+
