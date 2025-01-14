@@ -1,7 +1,7 @@
 import styles from "./Header.module.scss";
 import { NavLink } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "./context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
 function Header() {
   const { user, logout } = useAuth();
@@ -9,7 +9,7 @@ function Header() {
 
   const handleLogout = async () => {
     await logout(); // Appelle la fonction logout du contexte
-    navigate("/login"); // Redirige vers la page de connexion
+    navigate("/signin"); // Redirige vers la page de connexion
   };
   
   return (

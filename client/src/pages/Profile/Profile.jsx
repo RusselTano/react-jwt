@@ -1,32 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "./Profile.scss";
-import { fetchProfile } from "../../api/user";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const Profile = () => {
-  const [user, setUser] = useState(null);
-  const [error, setError] = useState(null);
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const loadProfile = async () => {
-      try {
-        const profile = await fetchProfile();
-        setUser(profile);
-      } catch (err) {
-        setError(err.message);
-        if (err.message == "Non autorisé.") {
-          navigate("/signin");
-        }
-      }
-    };
+  if (loading) return <div>Loading...</div>;
 
-    loadProfile();
-  }, [navigate]);
 
-  if (error) return <div>Erreur : {error} </div>;
-
-  if (!user) return <div>Chargement...</div>;
+  if (!user) {
+    navigate("/login"); // Redirige si l'utilisateur n'est pas connecté
+    return null;
+  }
 
   return (
     <div>

@@ -1,32 +1,27 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { loginUser } from "../../api/user";
 import { useNavigate } from "react-router-dom";
-import { AuthContext } from "../../context";
-import { use } from "react";
+import { useAuth } from "../../context/AuthContext"; // Utilise le hook du contexte
 
 const Signin = () => {
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext);
+  const { login } = useAuth(); // Récupération de la fonction `login` depuis le contexte
 
+  // Validation avec Yup
   const validationSchema = yup.object({
     email: yup
       .string()
-      .required("Il faut preciser votre email")
+      .required("Il faut préciser votre email")
       .email("L'email n'est pas valide"),
     password: yup
       .string()
-      .required("Il faut preciser votre mot de passe")
+      .required("Il faut préciser votre mot de passe")
       .min(6, "Mot de passe trop court"),
   });
 
-  const initialValues = {
-    email: "",
-    password: "",
-  };
-
+  // Configuration de React Hook Form
   const {
     setError,
     clearErrors,
@@ -34,26 +29,35 @@ const Signin = () => {
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm({
-    initialValues,
-    resolver: yupResolver(validationSchema),
+    resolver: yupResolver(validationSchema), // Validation avec Yup
+    defaultValues: {
+      email: "", // Valeurs initiales
+      password: "",
+    },
   });
 
-  const submit = handleSubmit(async (user) => {
-    console.log("Données soumises :", user); // Ajouter ceci pour voir les données
+  // Gestion de la soumission
+  const submit = handleSubmit(async (data) => {
     try {
       clearErrors();
-      // await loginUser(user); // Appelle l'API avec les données de l'utilisateur
-      await login(user)
-      navigate("/profile");
-    } catch (message) {
-      setError("generic", { type: "generic", message });
+      await login(data); // Appelle la fonction login du contexte
+      navigate("/profile"); // Redirige vers la page profil
+    } catch (error) {
+      console.error("Erreur lors de la connexion :", error.message);
+
+      // Affiche un message d'erreur global dans le formulaire
+      setError("generic", {
+        type: "server",
+        message: error.message || "Une erreur est survenue lors de la connexion.",
+      });
     }
   });
 
   return (
     <div>
-      <h2>SignIn</h2>
+      <h2>Se connecter</h2>
       <form onSubmit={submit}>
+        {/* Champ email */}
         <div>
           <input
             {...register("email")}
@@ -62,19 +66,25 @@ const Signin = () => {
           />
           {errors.email && <p>{errors.email.message}</p>}
         </div>
+
+        {/* Champ mot de passe */}
         <div>
           <input
-            className={errors.password ? "errors" : ""}
             {...register("password")}
             type="password"
-            placeholder="1237#$53"
+            placeholder="Mot de passe"
           />
-          {errors.password && (
-            <p className={errors ? "errors" : ""}>{errors.password.message}</p>
-          )}
+          {errors.password && <p>{errors.password.message}</p>}
         </div>
+
+        {/* Message d'erreur général */}
+        {errors.generic && <p>{errors.generic.message}</p>}
+
+        {/* Bouton de soumission */}
         <div>
-          <button disabled={isSubmitting}>Se connecter</button>
+          <button type="submit" disabled={isSubmitting}>
+            Se connecter
+          </button>
         </div>
       </form>
     </div>

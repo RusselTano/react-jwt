@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-
+const BASE_URL = "http://localhost:3000";
+// const BASE_URL = "https://api.myaddressesbook.com";
 // Création du contexte
 const AuthContext = createContext();
 
@@ -12,7 +13,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await fetch("/api/me", {
+        const response = await fetch(`${BASE_URL}/users/me`, {
           method: "GET",
           credentials: "include", // Inclure les cookies
         });
@@ -36,7 +37,7 @@ export const AuthProvider = ({ children }) => {
   // Déconnexion
   const logout = async () => {
     try {
-      await fetch("/api/logout", {
+      await fetch(`${BASE_URL}/users/logout`, {
         method: "POST",
         credentials: "include", // Inclure les cookies
       });
@@ -46,8 +47,21 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const login = async (data) => {
+    const response = await fetch(`${BASE_URL}/users/login`, {
+      method: "POST",
+      headers: {"Content-Type": "Application/json"},
+      body: JSON.stringify(data),
+      credentials: "include"
+    })
+
+    const userData = await response.json();
+    setUser(userData.user); // Met à jour l'utilisateur dans le contexte
+  
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, logout }}>
+    <AuthContext.Provider value={{ user, loading, logout, login }}>
       {children}
     </AuthContext.Provider>
   );

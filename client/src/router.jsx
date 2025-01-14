@@ -2,7 +2,6 @@
 
 import { lazy } from "react";
 import { createBrowserRouter } from "react-router-dom";
-import { rootLoader } from "./loaders/rootLoader";
 import App from "./App";
 
 const Homepage = lazy(() => import("./pages/Homepage/Homepage"));

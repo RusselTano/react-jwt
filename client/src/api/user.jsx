@@ -38,14 +38,6 @@ export async function loginUser(user) {
   }
 }
 
-export async function getCurrentUser(){
-  const response = await fetch(`${BASE_URL}/users/me`, {
-    method: "GET",
-    credentials: "include"
-  });
-  return response.json();
-}
-
 export const fetchProfile = async () => {
   try {
     const response = await fetch("/api/me", {
